@@ -1,0 +1,61 @@
+# lzctl example configuration. All values are placeholders.
+# Copy to ~/.config/lzctl/config.yaml (Linux/macOS) or %APPDATA%\lzctl\config.yaml (Windows),
+# or run `lzctl init` to generate one.
+
+defaults:
+  idp: corp                 # IdP used when an account doesn't name one
+  region: eu-west-1         # fallback region
+  username: alice           # fallback IdP username ($USER / %USERNAME% otherwise)
+  chain_role: OrganizationAccountAccessRole   # role assumed for `via` accounts (Control Tower: AWSControlTowerExecution)
+  production_tags: {env: "prod*"}           # accounts matching any of these are treated as production
+  inventory_tag_columns: [Application, Owner]   # resource tags shown as columns in `lzctl inventory`
+
+idps:
+  corp:
+    provider: pingfederate  # pingfederate | adfs | keycloak | form | manual | <plugin>
+    url: https://idp.example.com/idp/startSSO.ping?PartnerSpId=urn%3Aamazon%3Awebservices
+    # Add query parameters per account; {account_id}, {account_name} and the
+    # account's own url_params keys can be used:
+    # url_params: {acc: "{account_id}", sn: "{sn}"}
+    # ca_bundle: ~/certs/corporate-root.pem   # if a proxy inspects TLS
+    # keyring: true                           # store the password in the OS keychain
+    # session_duration: 14400                 # seconds, if your roles allow it
+    # options:                                # override form-field detection
+    #   username_fields: [pf.username]
+    #   otp_fields: [pf.challengeResponse]
+
+  browser:
+    provider: manual        # works with any IdP: copy the SAMLResponse from your browser
+    url: https://login.example.com/app/aws/sso
+
+accounts:
+  # Always quote account ids so YAML keeps them as 12-digit strings.
+  management:
+    id: "111111111111"
+    role: ReadOnly
+    tags: {env: prod, lz: core}
+
+  hub:
+    id: "222222222222"
+    role: PlatformAdmin     # role name, full ARN, or substring of the ARN
+    region: ap-southeast-2
+    tags: {env: prod, lz: core}
+
+  # Reached by assuming defaults.chain_role from `hub`:
+  workload-dev:
+    id: "333333333333"
+    via: hub
+    tags: {env: nonprod, lz: workloads, team: payments}
+
+  workload-prod:
+    id: "444444444444"
+    via: hub
+    role: arn:aws:iam::444444444444:role/BreakGlass
+    external_id: example-external-id
+    tags: {env: prod, lz: workloads, team: payments}
+
+  sandbox:
+    id: "555555555555"
+    idp: browser
+    profile: sbx            # write credentials as profile "sbx"
+    tags: {env: sandbox}

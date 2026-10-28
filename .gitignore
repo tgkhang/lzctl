@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------------------
+# Sensitive data: never commit any of this.
+# ---------------------------------------------------------------------------
+# lzctl / AWS configuration and credentials
+config.yaml
+config.yml
+accounts.yaml
+accounts.yml
+accounts.csv
+dev-config.yaml
+dev-credentials
+credentials
+.aws/
+*.credentials
+# Certificates and keys (corporate CA bundles, private keys)
+*.pem
+*.cer
+*.crt
+*.der
+*.p12
+*.pfx
+*.key
+cacert
+# Captured SAML / IdP pages
+*.saml
+saml*.txt
+saml*.xml
+SAMLResponse*
+# Environment files
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.python-version
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# ---------------------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
